@@ -3,6 +3,7 @@ package tech.samagua.spring_security_b010602.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.concurrent.DelegatingSecurityContextCallable;
+import org.springframework.security.concurrent.DelegatingSecurityContextExecutorService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +48,20 @@ public class HelloController {
         try(ExecutorService executorService = Executors.newCachedThreadPool();) {
             var contextTask = new DelegatingSecurityContextCallable<>(task);
             return executorService.submit(contextTask).get();
+        }
+    }
+
+    @GetMapping("/hola")
+    public String hola() throws Exception {
+        Callable<String> task = () -> {
+             var securityContext = SecurityContextHolder.getContext();
+             var authentication = securityContext.getAuthentication();
+            return "Hola, " + authentication.getName() + "!";
+        };
+
+        try (ExecutorService executorService = Executors.newCachedThreadPool();
+             var e = new DelegatingSecurityContextExecutorService(executorService);){
+            return e.submit(task).get();
         }
     }
 
