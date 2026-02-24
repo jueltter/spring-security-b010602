@@ -1,7 +1,6 @@
 package tech.samagua.spring_security_b010602.controllers;
 
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,10 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
 
     @GetMapping("/hello")
-    public String hello() {
+    public String hello(Authentication authentication) {
 
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        var authentication = securityContext.getAuthentication();
+        //SecurityContext securityContext = SecurityContextHolder.getContext();
+        //var authentication = securityContext.getAuthentication();
 
         return "Hello, " +authentication.getName()+ "!";
     }
